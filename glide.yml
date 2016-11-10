@@ -1,0 +1,5 @@
+package: github.com/pbaltodanom/DataDeck
+import:
+- package: github.com/mattn/go-sqlite3
+  subpackages:
+  - sqlite3
