@@ -20,14 +20,14 @@ const (
 type Songs struct {
 	Artist string
 	Name  string
-	Genre  string
+	Genre  uint
 	Length  uint
 }
 
 func Query(db *sql.DB, artist string, song string, genre uint, length uint, result *Songs) error {
 	row := db.QueryRow(
 		fmt.Sprintf(
-				"SELECT * FROM %s WHERE %s=? AND %s=? AND %s=?",
+				"SELECT * FROM %s WHERE %s=? AND %s=? AND %s=? AND %s=?",
 			SongTableName,
 			SongArtistCol,
 			SongNameCol,
@@ -39,8 +39,8 @@ func Query(db *sql.DB, artist string, song string, genre uint, length uint, resu
 		genre,
 		length,
 	)
-	var resultSongArtist, resultSongName, resultSongGenre string
-	var resultSongLength uint
+	var resultSongArtist, resultSongName string
+	var resultSongGenre, resultSongLength uint
 	if err := row.Scan(&resultSongArtist, &resultSongName, &resultSongGenre, resultSongLength); err != nil {
 		return err
 	}

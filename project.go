@@ -22,12 +22,12 @@ func main() {
 	db := InitDB(dbpath)
 	defer db.Close()
 
-	me := models.Songs{Artist: "Santana", Name:  "Smooth", Genre: "Pop", Length: "167"}
+	me := models.Songs{Artist: "Santana", Name:  "Smooth", Genre: "Pop", Length: 167}
 
 	log.Printf("SELECT")
-	selected := models.Songs{}
-	if err := models.Query(db, me.Artist, me.Name, me.Genre, me.Length); err != nil {
+	selectedSongs := models.Songs{}
+	if err := models.Query(db, me.Artist, me.Name, me.Genre, me.Length, &selectedSongs); err != nil {
 		log.Fatalf("Error selecting person from the DB (%s)", err)
 	}
-	log.Printf("Selected %+v from the DB", selected)
+	log.Printf("Selected %+v from the DB", selectedSongs)
 }
