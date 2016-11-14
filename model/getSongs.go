@@ -6,32 +6,27 @@ import (
 	"database/sql"
 )
 
-//Access the song
-//Retrieve the data that meets the query specifications
-func QueryGetSong(db *sql.DB, song string, SongsArray *[]Songs) error {
-	//Query executes a query that returns rows
-	rows, err := db.Query("SELECT song, artist, genres.name, length FROM songs INNER JOIN genres ON songs.genre = genres.ID WHERE song = ?", song)
+//Extra #1: Make a function in the API return songs by length, which we would like to search by passing a minimum and maximum length.
+func QueryGetSongs(db *sql.DB, min string, max string, SongsArray *[]Songs) error {
+	rows, err := db.Query("SELECT song, length FROM songs WHERE length BETWEEN ? AND ? ORDER BY length;", min, max)
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	
 	//---------------- VARIABLES WHERE THE DATA RETURNED BY THE QUERY ARE KEPT  ----------------
-	var resultSongArtist, resultSongName, resultSongGenre string
+	var resultSongName string
 	var resultSongLength uint
-
+	
 	//nil slice (type SONGS)
 	selectedSongs := Songs{}
 	for rows.Next() {
-		//For each row
-        if err := rows.Scan(&resultSongName, &resultSongArtist, &resultSongGenre, &resultSongLength); err != nil {
+        if err := rows.Scan(&resultSongName, &resultSongLength); err != nil {
 			return err
 		}
 		//Assign values returned by Scan to slice of type SONGS
-		selectedSongs.Artist = resultSongArtist
 		selectedSongs.Name = resultSongName
-		selectedSongs.GenreName = resultSongGenre
 		selectedSongs.Length = resultSongLength
-
+		
 		//Append the slice in the SongsArray
 		*SongsArray = append(*SongsArray, selectedSongs)
     }

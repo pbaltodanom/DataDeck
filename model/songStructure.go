@@ -7,4 +7,7 @@ type Songs struct {
 	Name  string `json:"Name,omitempty"`
 	GenreName  string `json:"Genre,omitempty"`
 	Length  uint `json:"Length,omitempty"`
+
+	NumberSongs  uint `json:"Number of songs,omitempty"`	
+	TotalLength  uint `json:"Total length,omitempty"`	
 }
