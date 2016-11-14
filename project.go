@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"net/http"	
 
-	//model "DataDeck/model"	
-	"github.com/pbaltodanom/DataDeck/models"
+	model "DataDeck/model"	
+	//"github.com/pbaltodanom/DataDeck/models"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
 )
