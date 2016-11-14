@@ -1,4 +1,4 @@
-package model
+package api
 
 // Person is the database model for a person
 type Songs struct {

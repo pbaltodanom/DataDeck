@@ -1,4 +1,4 @@
-package model
+package api
 
 //---------------- IMPORTS ---------------- 
 import (
@@ -6,11 +6,11 @@ import (
 	"database/sql"
 )
 
-//Access the song
+//Access the artist
 //Retrieve the data that meets the query specifications
-func QueryGetSong(db *sql.DB, song string, SongsArray *[]Songs) error {
+func QueryGetArtist(db *sql.DB, artist string, SongsArray *[]Songs) error {
 	//Query executes a query that returns rows
-	rows, err := db.Query("SELECT song, artist, genres.name, length FROM songs INNER JOIN genres ON songs.genre = genres.ID WHERE song = ?", song)
+	rows, err := db.Query("SELECT song, artist, genres.name, length FROM songs INNER JOIN genres ON songs.genre = genres.ID WHERE artist = ?", artist)
 	if err != nil {
 		log.Fatal(err)
 	}

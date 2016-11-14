@@ -1,13 +1,11 @@
 package api_test
 
 import (
-    "DataDeck"
-    "fmt"
-    "io"
     "net/http"
     "net/http/httptest"
-    "strings"
     "testing"
+
+    "github.com/gorilla/mux"
 )
 
 var (
@@ -17,8 +15,7 @@ var (
 )
 
 func init() {
-    server = httptest.NewServer(api.Handlers()) //Creating new server with the user handlers
+    server = httptest.NewServer(Handlers()) //Creating new server with the user handlers
 
     usersUrl = fmt.Sprintf("%s/artist/Beatles", server.URL) //Grab the address for the API endpoint
 }
-
