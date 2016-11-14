@@ -2,32 +2,72 @@ package main
 
 import (
 	"log"
-	"database/sql"
+	"encoding/json"
+	"net/http"	
 
+	//model "DataDeck/model"	
 	"github.com/pbaltodanom/DataDeck/models"
+	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func InitDB(filepath string) *sql.DB {
-	db, err := sql.Open("sqlite3", filepath)
-	if err != nil { panic(err) }
-	if db == nil { panic("db nil") }
-	return db
-}
+const dbpath = "jrdd.db"
 
-
-func main() {
-	const dbpath = "https://s3.amazonaws.com/bv-challenge/jrdd.db"
-
-	db := InitDB(dbpath)
+func GetArtist(w http.ResponseWriter, req *http.Request) {
+	db := model.InitDB(dbpath)
 	defer db.Close()
 
-	me := models.Songs{Artist: "Santana", Name:  "Smooth", Genre: "Pop", Length: 167}
+	params := mux.Vars(req)
+	selectedSongs := make([]model.Songs, 0)
 
-	log.Printf("SELECT")
-	selectedSongs := models.Songs{}
-	if err := models.Query(db, me.Artist, me.Name, me.Genre, me.Length, &selectedSongs); err != nil {
-		log.Fatalf("Error selecting person from the DB (%s)", err)
+	if err := model.QueryGetArtist(db, params["artist"], &selectedSongs); err != nil {
+		log.Fatalf("Error selecting song from the DB (%s)", err)
 	}
-	log.Printf("Selected %+v from the DB", selectedSongs)
+	
+	for _, bk := range selectedSongs {
+		json.NewEncoder(w).Encode(bk)
+  	}
 }
+
+func GetSong(w http.ResponseWriter, req *http.Request) {
+	db := model.InitDB(dbpath)
+	defer db.Close()
+
+	params := mux.Vars(req)
+	selectedSongs := make([]model.Songs, 0)
+
+	if err := model.QueryGetSong(db, params["song"], &selectedSongs); err != nil {
+		log.Fatalf("Error selecting song from the DB (%s)", err)
+	}
+	
+	for _, bk := range selectedSongs {
+		json.NewEncoder(w).Encode(bk)
+  	}
+}
+
+func GetGenre(w http.ResponseWriter, req *http.Request) {
+	db := model.InitDB(dbpath)
+	defer db.Close()
+
+	params := mux.Vars(req)
+	selectedSongs := make([]model.Songs, 0)
+
+	if err := model.QueryGetGenre(db, params["genre"], &selectedSongs); err != nil {
+		log.Fatalf("Error selecting song from the DB (%s)", err)
+	}
+
+	for _, bk := range selectedSongs {
+		json.NewEncoder(w).Encode(bk)
+  	}
+}
+
+func main() {
+	router := mux.NewRouter()	
+
+	router.HandleFunc("/artist/{artist}", GetArtist).Methods("GET")
+	router.HandleFunc("/song/{song}", GetSong).Methods("GET")
+	router.HandleFunc("/genre/{genre}", GetGenre).Methods("GET")
+
+	log.Fatal(http.ListenAndServe(":12345", router))
+}
+
